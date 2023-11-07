@@ -1,0 +1,36 @@
+{
+  "collection": "articles",
+  "query": {
+    "fields": {
+      "id": {
+	"column": "id",
+	"type": "column"
+      },
+      "author_id": {
+	"column": "author_id",
+	"type": "column"
+      },
+      "title": {
+	"column": "title",
+	"type": "column"
+      }
+    },
+    "where": {
+      "type": "binary_comparison_operator",
+      "column": {
+	"type": "column",
+	"name": "author_id",
+	"path": []
+      },
+      "value": {
+	"type": "scalar",
+	"value": 1
+      },
+      "operator": {
+	"type": "equal"
+      }
+    }
+  },
+  "arguments": {},
+  "collection_relationships": {}
+}

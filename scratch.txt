@@ -1,0 +1,75 @@
+# -*- mode: restclient; -*-
+
+# :PORT = 80
+# :HOST = connector-f44d8e8d-3a2c-4797-b86e-b31bf2513360-hyc5v23h6a-ue.a.run.app
+
+:PORT = 8080
+:HOST = localhost
+
+#
+GET https://connector-f44d8e8d-3a2c-4797-b86e-b31bf2513360-hyc5v23h6a-ue.a.run.app/schema
+
+
+# Get capabilities
+GET http://:HOST::PORT/capabilities
+
+# Get healthz
+GET http://:HOST::PORT/healthz
+
+# Get metrics
+GET http://:HOST::PORT/metrics
+
+# Get schema
+GET http://:HOST::PORT/schema
+
+# Get all articles
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "collection": "articles",
+  "query": {
+    "fields": {
+      "id": {
+	"column": "id",
+	"type": "column"
+      },
+      "author_id": {
+	"column": "author_id",
+	"type": "column"
+      },
+      "title": {
+	"column": "title",
+	"type": "column"
+      }
+    }
+  },
+  "arguments": {},
+  "collection_relationships": {}
+}
+
+# Get all authors
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "collection": "authors",
+  "query": {
+    "fields": {
+      "id": {
+	"column": "id",
+	"type": "column"
+      },
+      "first_name": {
+	"column": "first_name",
+	"type": "column"
+      },
+      "last_name": {
+	"column": "last_name",
+	"type": "column"
+      }
+    }
+  },
+  "arguments": {},
+  "collection_relationships": {}
+}
