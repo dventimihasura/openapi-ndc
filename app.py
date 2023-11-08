@@ -1,17 +1,8 @@
 from flask import Flask
 from flask import request
-import jq
-import jsonlines
+import requests
 
 app = Flask(__name__)
-
-schemas = [schema for schema in jsonlines.open("schema.jsonl")]
-authors = [author for author in jsonlines.open("authors.jsonl")]
-articles = [article for article in jsonlines.open("articles.jsonl")]
-db = {
-    "articles": articles,
-    "authors": authors
-}
 
 
 @app.get("/healthz")
@@ -52,33 +43,25 @@ def capabilities():
 
 @app.get("/schema")
 def schema():
-    for schema in schemas:
-        return schema
+    return None
 
 
 @app.post("/query")
 def query():
-    for filter in jq.all(r'''
-{
-  "collection":
-    (
-      .collection
-    ),
-  "filter":
-    (
-      [
-        .query.fields
-        |to_entries[]
-        |select(.value.type=="column")
-        |{"key": .key, "value": ".\(.value.column)"}
-      ]
-      |map("\"\(.key)\": \(.value)")
-      |join(", ")
+    sp = request.get_json()['collection']
+    id = request.get_json()['query']['where']['value']['value']
+    response = requests.request(
+        method='GET',
+        url=f'http://24.144.81.165:3001/{sp}?id=eq.{id}',
+        headers={key: value for (key, value) in request.headers
+                 if key != 'Host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False
     )
-}
-|".\(.collection)[]|{\(.filter)}"
-    ''', request.get_json()):
-        return jq.all(filter, db)
+    headers = [(name, value) for (name, value) in response.headers.items()
+               if name != 'Content-Length']
+    return response.content, response.status_code, headers
 
 
 @app.post("/explain")

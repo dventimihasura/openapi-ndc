@@ -3,7 +3,7 @@
 # :PORT = 80
 # :HOST = connector-f44d8e8d-3a2c-4797-b86e-b31bf2513360-hyc5v23h6a-ue.a.run.app
 
-:PORT = 8080
+:PORT = 5000
 :HOST = localhost
 
 #
@@ -27,7 +27,7 @@ POST http://:HOST::PORT/query
 Content-Type: application/json
 
 {
-  "collection": "articles",
+  "collection": "servers",
   "query": {
     "fields": {
       "id": {
@@ -41,6 +41,11 @@ Content-Type: application/json
       "title": {
 	"column": "title",
 	"type": "column"
+      }
+    },
+    "where": {
+      "value": {
+        "value": 3
       }
     }
   },
