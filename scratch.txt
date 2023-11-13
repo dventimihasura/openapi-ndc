@@ -26,55 +26,38 @@ GET http://:HOST::PORT/schema
 POST http://:HOST::PORT/query
 Content-Type: application/json
 
-{
-  "collection": "alerts",
-  "query": {
-    "fields": {
-      "id": {
-	"column": "id",
-	"type": "column"
-      },
-      "author_id": {
-	"column": "author_id",
-	"type": "column"
-      },
-      "title": {
-	"column": "title",
-	"type": "column"
-      }
-    },
-    "where": {
-      "value": {
-        "value": 3
-      }
-    }
-  },
-  "arguments": {},
-  "collection_relationships": {}
-}
+
+
+#
+GET http://143.110.159.236:3001/servers?select=id&id=eq.1
 
 # Get all authors
 POST http://:HOST::PORT/query
 Content-Type: application/json
 
 {
-  "collection": "authors",
+  "collection": "servers",
   "query": {
     "fields": {
       "id": {
-	"column": "id",
-	"type": "column"
+        "type": "column",
+	"column": "id"
+      }
+    },
+    "where": {
+      "type": "binary_comparison_operator",
+      "column": {
+        "type": "column",
+	"name": "id",
+	"path": []
       },
-      "first_name": {
-	"column": "first_name",
-	"type": "column"
+      "operator": {
+        "type": "equal"
       },
-      "last_name": {
-	"column": "last_name",
-	"type": "column"
+      "value": {
+        "type": "scalar",
+	"value": 2
       }
     }
-  },
-  "arguments": {},
-  "collection_relationships": {}
+  }
 }
