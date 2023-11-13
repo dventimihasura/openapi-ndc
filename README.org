@@ -1,0 +1,15 @@
+* What
+
+The [[https://github.com/dventimihasura/openapi-ndc][openapi-ndc]] project is a Proof-Of-Concept (POC) demo of a Hasura
+Native Data Connector (NDC) for the [[https://github.com/dventimihasura/openapi-mock][openapi-mock]] mock OpenAPI service.
+
+* Why
+
+Both the [[https://github.com/dventimihasura/openapi-ndc][openapi-ndc]] project and [[https://github.com/dventimihasura/openapi-mock][openapi-mock]] projects are for
+illustrative purposes only.  They illustrate building a NDC for a
+given OpenAPI micro-service.
+
+* How
+
+This NDC is written in Python using [[https://flask.palletsprojects.com/][Flask]].
+

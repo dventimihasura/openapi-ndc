@@ -1,5 +1,7 @@
 from flask import Flask
 from flask import request
+import json
+import os
 import requests
 
 app = Flask(__name__)
@@ -41,6 +43,14 @@ def capabilities():
     }
 
 
+@app.post("/explain")
+def explain():
+    return {
+        "message": "explain is not supported",
+        "details": None
+    }
+
+
 @app.get("/schema")
 def schema():
     return None
@@ -48,11 +58,10 @@ def schema():
 
 @app.post("/query")
 def query():
-    sp = request.get_json()['collection']
-    id = request.get_json()['query']['where']['value']['value']
+    queryRequest = request.get_json()
     response = requests.request(
         method='GET',
-        url=f'http://24.144.81.165:3001/{sp}?id=eq.{id}',
+        url=url(queryRequest),
         headers={key: value for (key, value) in request.headers
                  if key != 'Host'},
         data=request.get_data(),
@@ -64,9 +73,53 @@ def query():
     return response.content, response.status_code, headers
 
 
-@app.post("/explain")
-def explain():
-    return {
-        "message": "explain is not supported",
-        "details": None
+def url(x):
+    return f'{scheme(x)}://{host(x)}:{port(x)}{path(x)}{query(x)}'
+
+
+def scheme(x):
+    return 'http'
+
+
+def host(x):
+    return os.getenv("HOST")
+
+
+def port(x):
+    return os.getenv("PORT")
+
+
+def path(x):
+    return f'/{x["collection"]}'
+
+
+def query(x):
+    return f'{verticalFilter(x["query"])}{horizontalFilter(x["query"]["where"])}'
+
+
+def verticalFilter(x):
+    return "?select=" + ",".join([value["column"]
+                                  for _, value in x["fields"].items()
+                                  if value["type"] == "column"])
+
+
+def horizontalFilter(x):
+    return "&" + ("and"
+                  if x["type"] == "and"
+                  else "or"
+                  if x["type"] == "or"
+                  else binaryComparisonOperator(x))
+
+
+def binaryComparisonOperator(x):
+    return f'{x["column"]["name"]}={operators[x["operator"]["name"]]}.{x["value"]["value"]}'
+
+
+operators = {
+    "equals": "eq",
+    "like": "like"
     }
+
+
+
+
