@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import request
-import json
 import os
 import requests
 
@@ -53,7 +52,41 @@ def explain():
 
 @app.get("/schema")
 def schema():
-    return None
+    spec = requests.request(
+        method='GET',
+        url=f'http://{os.getenv("SERVER_HOST")}:{os.getenv("SERVER_PORT")}'
+    ).json()
+    scalar_types = {
+        "integer": {
+            "aggregate_functions": {},
+            "comparison_operators": {}
+        },
+        "string": {
+            "aggregate_functions": {},
+            "comparison_operators": {}
+            }
+        }
+    object_types = {
+        k: {
+            "fields": {
+                k: {
+                    "type": "named",
+                    "name": v["type"]
+                } for k,v in v["properties"].items()
+            }
+        } for k,v in spec["components"]["schemas"].items()
+    }
+    collections = [
+        {
+            "name": k,
+            "type": k
+        } for k, v in spec["components"]["schemas"].items()
+    ]
+    return {
+        "scalar_types": scalar_types,
+        "object_types": object_types,
+        "collections": collections
+        }
 
 
 @app.post("/query")
@@ -74,7 +107,7 @@ def query():
 
 
 def url(x):
-    return f'{scheme(x)}://{host(x)}:{port(x)}{path(x)}{query(x)}'
+    return f'{scheme(x)}://{host(x)}:{port(x)}{path(x)}{query_part(x)}'
 
 
 def scheme(x):
@@ -82,44 +115,53 @@ def scheme(x):
 
 
 def host(x):
-    return os.getenv("HOST")
+    return os.getenv("SERVER_HOST")
 
 
 def port(x):
-    return os.getenv("PORT")
+    return os.getenv("SERVER_PORT")
 
 
 def path(x):
     return f'/{x["collection"]}'
 
 
-def query(x):
-    return f'{verticalFilter(x["query"])}{horizontalFilter(x["query"]["where"])}'
+def query_part(x):
+    return f'{verticalFilter(x)}{horizontalFilter(x)}'
 
 
 def verticalFilter(x):
+    if "query" not in x:
+        return ""
+    if "fields" not in x["query"]:
+        return ""
     return "?select=" + ",".join([value["column"]
-                                  for _, value in x["fields"].items()
+                                  for _, value in x["query"]["fields"].items()
                                   if value["type"] == "column"])
 
 
 def horizontalFilter(x):
+    if "query" not in x:
+        return ""
+    if "where" not in x["query"]:
+        return ""
     return "&" + ("and"
-                  if x["type"] == "and"
+                  if x["query"]["where"]["type"] == "and"
                   else "or"
-                  if x["type"] == "or"
+                  if x["query"]["where"]["type"] == "or"
                   else binaryComparisonOperator(x))
 
 
 def binaryComparisonOperator(x):
-    return f'{x["column"]["name"]}={operators[x["operator"]["name"]]}.{x["value"]["value"]}'
+    if "query" not in x:
+        return ""
+    if "where" not in x["query"]:
+        return ""
+    return f'{x["query"]["where"]["column"]["name"]}={operators[x["query"]["where"]["operator"]["type"]]}.{x["query"]["where"]["value"]["value"]}'
 
 
 operators = {
     "equals": "eq",
+    "equal": "eq",
     "like": "like"
     }
-
-
-
-
