@@ -27,7 +27,7 @@ POST http://:HOST::PORT/query
 Content-Type: application/json
 
 {
-  "collection": "servers",
+  "collection": "alerts",
   "query": {
     "fields": {
       "id": {
