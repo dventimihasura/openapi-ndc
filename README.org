@@ -13,3 +13,24 @@ given OpenAPI micro-service.
 
 This NDC is written in Python using [[https://flask.palletsprojects.com/][Flask]].
 
+* Steps
+
+The following steps can be followed for local development.
+
+** Step 1:  Install the Python libraries.
+
+#+begin_src bash
+  pip install -r requirements.txt
+#+end_src
+
+** Step 2:  Set up environment variables.
+
+#+begin_src bash
+  cat <<EOF > setenv.sh
+  export SERVER_HOST= <set to the hostname of the OpenAPI server>
+  export SERVER_PORT= <set to the port of the OpenAPI server>
+  EOF
+#+end_src
+
+#+RESULTS:
+
