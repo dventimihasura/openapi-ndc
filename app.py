@@ -33,6 +33,7 @@ def capabilities():
                 "order_by_aggregate": {},
                 "foreach": {}
             },
+            "explain": {},
             "mutations": {
                 "nested_inserts": {},
                 "returning": {}
@@ -144,7 +145,6 @@ def query():
                                 }
                             }
                         ]
-    # return response.content, response.status_code, headers
     return queryResponse, response.status_code
 
 
