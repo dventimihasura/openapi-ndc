@@ -1,15 +1,11 @@
 # -*- mode: restclient; -*-
 
-# :PORT = 80
-# :HOST = connector-f44d8e8d-3a2c-4797-b86e-b31bf2513360-hyc5v23h6a-ue.a.run.app
+:HOST = connector-8f522256-fa10-4b46-b4b8-089c76ed6ee7-hyc5v23h6a-ue.a.run.app
+# :HOST = localhost
 
-:PORT = 5000
+# :PORT = 5000
+:PORT = 80
 # :PORT = 8080
-:HOST = localhost
-
-#
-GET https://connector-f44d8e8d-3a2c-4797-b86e-b31bf2513360-hyc5v23h6a-ue.a.run.app/schema
-
 
 # Get capabilities
 GET http://:HOST::PORT/capabilities
@@ -23,16 +19,7 @@ GET http://:HOST::PORT/metrics
 # Get schema
 GET http://:HOST::PORT/schema
 
-# Get all articles
-POST http://:HOST::PORT/query
-Content-Type: application/json
-
-
-
-#
-GET http://143.110.159.236:3001
-
-# Get all authors
+# 
 POST http://:HOST::PORT/query
 Content-Type: application/json
 
