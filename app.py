@@ -5,6 +5,7 @@ import os
 import requests
 
 app = Flask(__name__)
+app.config.from_file(os.getenv("CONFIG_FILE"), load=json.load)
 
 
 @app.get("/healthz")
@@ -55,7 +56,7 @@ def explain():
 def schema():
     spec = requests.request(
         method='GET',
-        url=f'http://{os.getenv("SERVER_HOST")}:{os.getenv("SERVER_PORT")}'
+        url=f'http://{app.config["SERVER_HOST"]}:{app.config["SERVER_PORT"]}'
     ).json()
     scalar_types = {
         "integer": {
