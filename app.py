@@ -6,9 +6,6 @@ import requests
 
 app = Flask(__name__)
 
-# app.config.from_file(os.getenv("CONFIG_FILE"), load=json.load)
-
-
 @app.get("/healthz")
 def healthz():
     return ("", 204)
@@ -57,7 +54,6 @@ def explain():
 def schema():
     spec = requests.request(
         method='GET',
-        # url=f'http://{app.config["SERVER_HOST"]}:{app.config["SERVER_PORT"]}'
         url=f'http://{os.getenv("SERVER_HOST")}:{os.getenv("SERVER_PORT")}'
     ).json()
     scalar_types = {
@@ -74,8 +70,12 @@ def schema():
         k: {
             "fields": {
                 k: {
-                    "type": "named",
-                    "name": v["type"]
+                    "description": "",
+                    "arguments": {},
+                    "type": {
+                        "type": "named",
+                        "name": "string" #v["type"]
+                        }
                 } for k,v in v["properties"].items()
             }
         } for k,v in spec["components"]["schemas"].items()
@@ -83,17 +83,21 @@ def schema():
     collections = [
         {
             "name": k,
-            "type": k
+            "type": k,
+            "arguments": {},
+            "uniqueness_constraints": {},
+            "foreign_keys": {}
         } for k, v in spec["components"]["schemas"].items()
     ]
-    # scalar_types = {}
-    # object_types = {}
-    # collections = []
+    functions = []
+    procedures = []
     return {
         "scalar_types": scalar_types,
         "object_types": object_types,
-        "collections": collections
-        }
+        "collections": collections,
+        "functions": functions,
+        "procedures": procedures
+    }
 
 
 @app.post("/query")
@@ -110,7 +114,38 @@ def query():
     )
     headers = [(name, value) for (name, value) in response.headers.items()
                if name != 'Content-Length']
-    return response.content, response.status_code, headers
+    print(url(queryRequest))
+    queryResponse = [
+        {
+            "rows": [
+                {
+                    k: {
+                        "title": v
+                    } for k,v in row.items()
+                } for row in response.json()
+            ]
+        },
+    ]
+    if "query" in queryRequest:
+        print(1)
+        if "aggregates" in queryRequest["query"]:
+            print(2)
+            if "count" in queryRequest["query"]["aggregates"]:
+                print(3)
+                if "type" in queryRequest["query"]["aggregates"]["count"]:
+                    print(4)
+                    if "star_count"==queryRequest["query"]["aggregates"]["count"]["type"]:
+                        print(5)
+                        queryResponse = [
+                            {
+                                "aggregates": {
+                                    "name": "star_count",
+                                    "count": 0
+                                }
+                            }
+                        ]
+    # return response.content, response.status_code, headers
+    return queryResponse, response.status_code
 
 
 def url(x):
@@ -130,11 +165,16 @@ def port(x):
 
 
 def path(x):
+    if "collection" not in x:
+        return ""
     return f'/{x["collection"]}'
 
 
 def query_part(x):
-    return f'{verticalFilter(x)}{horizontalFilter(x)}'
+    parts = [verticalFilter(x), horizontalFilter(x), limit(x)]
+    if not parts:
+        return "?" + "&".join(parts)
+    return ""
 
 
 def verticalFilter(x):
@@ -142,7 +182,7 @@ def verticalFilter(x):
         return ""
     if "fields" not in x["query"]:
         return ""
-    return "?select=" + ",".join([value["column"]
+    return "select=" + ",".join([value["column"]
                                   for _, value in x["query"]["fields"].items()
                                   if value["type"] == "column"])
 
@@ -152,7 +192,7 @@ def horizontalFilter(x):
         return ""
     if "where" not in x["query"]:
         return ""
-    return "&" + ("and"
+    return "" + ("and"
                   if x["query"]["where"]["type"] == "and"
                   else "or"
                   if x["query"]["where"]["type"] == "or"
@@ -165,6 +205,15 @@ def binaryComparisonOperator(x):
     if "where" not in x["query"]:
         return ""
     return f'{x["query"]["where"]["column"]["name"]}={operators[x["query"]["where"]["operator"]["type"]]}.{x["query"]["where"]["value"]["value"]}'
+
+
+def limit(x):
+    if "query" not in x:
+        return ""
+    if "limit" not in x["query"]:
+        return ""
+    return "" + f'limit={x["query"]["limit"]}'
+    
 
 
 operators = {

@@ -1,11 +1,12 @@
 # -*- mode: restclient; -*-
 
 # :HOST = connector-8f522256-fa10-4b46-b4b8-089c76ed6ee7-hyc5v23h6a-ue.a.run.app
-:HOST = connector-331002ea-387a-46aa-99af-976a5a1fd88c-hyc5v23h6a-ue.a.run.app
-# :HOST = localhost
+# :HOST = connector-331002ea-387a-46aa-99af-976a5a1fd88c-hyc5v23h6a-ue.a.run.app
+# :HOST = connector-2e1a97fb-cc8a-4277-89fc-856024124767-hyc5v23h6a-ue.a.run.app
+:HOST = localhost
 
-# :PORT = 5000
-:PORT = 80
+:PORT = 5000
+# :PORT = 80
 # :PORT = 8080
 
 # Get capabilities
@@ -25,12 +26,12 @@ POST http://:HOST::PORT/query
 Content-Type: application/json
 
 {
-  "collection": "servers",
+  "collection": "alerts",
   "query": {
     "fields": {
       "id": {
         "type": "column",
-	"column": "id"
+	"column": "alert_id"
       }
     },
     "where": {

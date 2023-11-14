@@ -1,0 +1,237 @@
+# -*- mode: restclient; -*-
+
+:HOST = localhost
+:PORT = 5000
+
+# T 127.0.0.1:43026 -> 127.0.0.1:5000 [AP] #28
+# POST /query HTTP/1.1.
+# content-type: application/json.
+# accept: */*.
+# host: localhost:5000.
+# content-length: 1173.
+# .
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "arguments": {},
+  "collection": "servers",
+  "collection_relationships": {},
+  "query": {
+    "fields": {
+      "auto_ilo_fw_update": {
+        "column": "auto_ilo_fw_update",
+        "type": "column"
+      },
+      "bios_family": {
+        "column": "bios_family",
+        "type": "column"
+      },
+      "content": {
+        "column": "content",
+        "type": "column"
+      },
+      "created_at": {
+        "column": "created_at",
+        "type": "column"
+      },
+      "firmware_bundle_uri": {
+        "column": "firmware_bundle_uri",
+        "type": "column"
+      },
+      "firmware_inventory": {
+        "column": "firmware_inventory",
+        "type": "column"
+      },
+      "generation": {
+        "column": "generation",
+        "type": "column"
+      },
+      "hardware": {
+        "column": "hardware",
+        "type": "column"
+      },
+      "host": {
+        "column": "host",
+        "type": "column"
+      },
+      "id": {
+        "column": "id",
+        "type": "column"
+      },
+      "last_firmware_update": {
+        "column": "last_firmware_update",
+        "type": "column"
+      },
+      "name": {
+        "column": "name",
+        "type": "column"
+      },
+      "platform_family": {
+        "column": "platform_family",
+        "type": "column"
+      },
+      "processor_vendor": {
+        "column": "processor_vendor",
+        "type": "column"
+      },
+      "resource_uri": {
+        "column": "resource_uri",
+        "type": "column"
+      },
+      "server_id": {
+        "column": "server_id",
+        "type": "column"
+      },
+      "state": {
+        "column": "state",
+        "type": "column"
+      },
+      "tags": {
+        "column": "tags",
+        "type": "column"
+      },
+      "type": {
+        "column": "type",
+        "type": "column"
+      },
+      "updated_at": {
+        "column": "updated_at",
+        "type": "column"
+      }
+    },
+    "limit": 1
+  }
+}
+
+# T 127.0.0.1:43042 -> 127.0.0.1:5000 [AP] #41
+# POST /query HTTP/1.1.
+# content-type: application/json.
+# accept: */*.
+# host: localhost:5000.
+# content-length: 135.
+# .
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "arguments": {},
+  "collection": "servers",
+  "collection_relationships": {},
+  "query": {
+    "aggregates": {
+      "count": {
+        "type": "star_count"
+      }
+    },
+    "limit": 10
+  }
+}
+
+# T 127.0.0.1:47100 -> 127.0.0.1:5000 [AP] #54
+# POST /query HTTP/1.1.
+# content-type: application/json.
+# accept: */*.
+# host: localhost:5000.
+# content-length: 847.
+# .
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "arguments": {},
+  "collection": "alerts",
+  "collection_relationships": {},
+  "query": {
+    "fields": {
+      "alert_id": {
+        "column": "alert_id",
+        "type": "column"
+      },
+      "category": {
+        "column": "category",
+        "type": "column"
+      },
+      "content": {
+        "column": "content",
+        "type": "column"
+      },
+      "created_at": {
+        "column": "created_at",
+        "type": "column"
+      },
+      "description": {
+        "column": "description",
+        "type": "column"
+      },
+      "generation": {
+        "column": "generation",
+        "type": "column"
+      },
+      "id": {
+        "column": "id",
+        "type": "column"
+      },
+      "message": {
+        "column": "message",
+        "type": "column"
+      },
+      "parent_id": {
+        "column": "parent_id",
+        "type": "column"
+      },
+      "resolution": {
+        "column": "resolution",
+        "type": "column"
+      },
+      "server_id": {
+        "column": "server_id",
+        "type": "column"
+      },
+      "service_event": {
+        "column": "service_event",
+        "type": "column"
+      },
+      "severity": {
+        "column": "severity",
+        "type": "column"
+      },
+      "type": {
+        "column": "type",
+        "type": "column"
+      },
+      "updated_at": {
+        "column": "updated_at",
+        "type": "column"
+      }
+    },
+    "limit": 1
+  }
+}
+
+# T 127.0.0.1:47104 -> 127.0.0.1:5000 [AP] #68
+# POST /query HTTP/1.1.
+# content-type: application/json.
+# accept: */*.
+# host: localhost:5000.
+# content-length: 134.
+# .
+POST http://:HOST::PORT/query
+Content-Type: application/json
+
+{
+  "arguments": {},
+  "collection": "alerts",
+  "collection_relationships": {},
+  "query": {
+    "aggregates": {
+      "count": {
+        "type": "star_count"
+      }
+    },
+    "limit": 10
+  }
+}
+
+#
+GET http://143.110.159.236:3001/alerts?limit=10
