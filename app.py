@@ -128,15 +128,10 @@ def query():
         },
     ]
     if "query" in queryRequest:
-        print(1)
         if "aggregates" in queryRequest["query"]:
-            print(2)
             if "count" in queryRequest["query"]["aggregates"]:
-                print(3)
                 if "type" in queryRequest["query"]["aggregates"]["count"]:
-                    print(4)
                     if "star_count"==queryRequest["query"]["aggregates"]["count"]["type"]:
-                        print(5)
                         queryResponse = [
                             {
                                 "aggregates": {
