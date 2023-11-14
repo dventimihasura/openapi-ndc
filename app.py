@@ -1,17 +1,24 @@
-from flask import Flask
-from flask import request
-import json
-import os
-import requests
+from flask import Flask, request # Flask apps need the Flask libraries
+import os                       # Flask apps can be configured in a
+                                # variety of ways: config.py,
+                                # config.json, environment variables,
+                                # etc.  Here, we choose to configure
+                                # with environment variables, so we
+                                # need the os package.
+import requests                 # Upstream requests to an HTTP
+                                # micro-service need something like
+                                # the request library
 
-app = Flask(__name__)
+app = Flask(__name__)           # Entry-point to all Flask apps
 
-@app.get("/healthz")
+# Public API functions
+
+@app.get("/healthz")            # Hasura NDC spec path:  healthz
 def healthz():
     return ("", 204)
 
 
-@app.get("/metrics")
+@app.get("/metrics")            # Hasura NDC spec path:  metrics
 def metrics():
     return ("""
 # HELP active_requests number of active requests
@@ -23,7 +30,7 @@ total_requests 48
     """, 200, {"content-type": "text/plain"})
 
 
-@app.get("/capabilities")
+@app.get("/capabilities")       # Hasura NDC spec path:  capabilities
 def capabilities():
     return {
         "versions": "^0.1.0",
@@ -43,7 +50,7 @@ def capabilities():
     }
 
 
-@app.post("/explain")
+@app.post("/explain")           # Hasura NDC spec path:  explain
 def explain():
     return {
         "message": "explain is not supported",
@@ -51,7 +58,7 @@ def explain():
     }
 
 
-@app.get("/schema")
+@app.get("/schema")             # Hasura NDC spec path:  schema
 def schema():
     spec = requests.request(
         method='GET',
@@ -75,8 +82,8 @@ def schema():
                     "arguments": {},
                     "type": {
                         "type": "named",
-                        "name": "string" #v["type"]
-                        }
+                        "name": "string"
+                    }
                 } for k,v in v["properties"].items()
             }
         } for k,v in spec["components"]["schemas"].items()
@@ -101,7 +108,7 @@ def schema():
     }
 
 
-@app.post("/query")
+@app.post("/query")             # Hasura NDC spec path:  query
 def query():
     queryRequest = request.get_json()
     response = requests.request(
@@ -142,6 +149,30 @@ def query():
                         ]
     return queryResponse, response.status_code
 
+
+# Private helper functions
+
+# The following functions roughly approximate a serializer for
+# generating a textual representation of an Abstract Syntax Tree
+# (https://en.wikipedia.org/wiki/Abstract_syntax_tree).  Ideally, one
+# would complement this with a parser--such as a Recursive Descent
+# Parser (https://en.wikipedia.org/wiki/Recursive_descent_parser)
+# though though output of a parser generator would also suffice--to
+# parse the input Hasura NDC QueryRequest JSON representation into its
+# own AST, do a tree transformation to transform that AST into an AST
+# for the target platform, and then serialize that target AST into the
+# target data source language (in this case the URL syntax of the
+# OAS3.0 micro-service).  In this case we take the shortcut of
+# serializing the JSON representation of the QueryRequest directly
+# into the target URL.
+
+# Note that translating the input QueryRequest into the language of
+# the target data source is only appropriate when the target data
+# source supports similar query semantics to Hasura (i.e., attribute
+# selection, filtering, limiting, joins, aggregates, etc.).  For more
+# primitive target data sources without this support, a different
+# style for writing an NDC is warranted, where those operations are
+# simulated in-situ in the Connector code.
 
 def url(x):
     return f'{scheme(x)}://{host(x)}:{port(x)}{path(x)}{query_part(x)}'
