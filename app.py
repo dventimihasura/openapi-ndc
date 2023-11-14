@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+import json
 import os
 import requests
 
@@ -82,6 +83,9 @@ def schema():
             "type": k
         } for k, v in spec["components"]["schemas"].items()
     ]
+    # scalar_types = {}
+    # object_types = {}
+    # collections = []
     return {
         "scalar_types": scalar_types,
         "object_types": object_types,

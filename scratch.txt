@@ -29,7 +29,7 @@ Content-Type: application/json
 
 
 #
-GET http://143.110.159.236:3001/servers?select=id&id=eq.1
+GET http://143.110.159.236:3001
 
 # Get all authors
 POST http://:HOST::PORT/query
