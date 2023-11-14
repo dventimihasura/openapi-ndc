@@ -58,7 +58,7 @@ def schema():
     spec = requests.request(
         method='GET',
         # url=f'http://{app.config["SERVER_HOST"]}:{app.config["SERVER_PORT"]}'
-        url=f'http://{os.getenv["SERVER_HOST"]}:{os.getenv["SERVER_PORT"]}'
+        url=f'http://{os.getenv("SERVER_HOST")}:{os.getenv("SERVER_PORT")}'
     ).json()
     scalar_types = {
         "integer": {

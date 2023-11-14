@@ -1,6 +1,7 @@
 # -*- mode: restclient; -*-
 
-:HOST = connector-8f522256-fa10-4b46-b4b8-089c76ed6ee7-hyc5v23h6a-ue.a.run.app
+# :HOST = connector-8f522256-fa10-4b46-b4b8-089c76ed6ee7-hyc5v23h6a-ue.a.run.app
+:HOST = connector-331002ea-387a-46aa-99af-976a5a1fd88c-hyc5v23h6a-ue.a.run.app
 # :HOST = localhost
 
 # :PORT = 5000
